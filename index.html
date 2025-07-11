@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="contactForm" class="space-y-9">
+  <input type="text" name="name" placeholder="Your full name" required />
+  <input type="email" name="email" placeholder="Your email address" required />
+  <input type="tel" name="phone" placeholder="Phone" />
+  <input type="text" name="subject" placeholder="Subject" />
+  <input type="text" name="message" placeholder="Your message" required />
+  <button type="submit">Submit</button>
+</form>
+
+<p id="thankYouMsg" class="hidden">Thank you! We'll be in touch soon.</p>
+
+
+<script>
+    console.log('Form element:', document.getElementById('contactForm'));
+
+  document.getElementById("contactForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+    fetch('http://localhost:3000/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.success) {
+        document.getElementById("thankYouMsg").classList.remove("hidden");
+        this.reset();
+      } else {
+        alert("Failed to send. Try again later.");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error submitting form.");
+    });
+  });
+</script>
+
+</body>
+</html>
